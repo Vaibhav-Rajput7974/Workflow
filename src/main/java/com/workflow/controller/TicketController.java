@@ -1,7 +1,7 @@
 package com.workflow.controller;
 
 import com.workflow.entity.Ticket;
-import com.workflow.repository.TicketRepo;
+import com.workflow.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,17 +14,17 @@ import java.util.Optional;
 public class TicketController {
 
     @Autowired
-    private TicketRepo ticketRepo;
+    private TicketService ticketService;
 
     @GetMapping
     public ResponseEntity<List<Ticket>> getAllTickets() {
-        List<Ticket> tickets = ticketRepo.findAll();
+        List<Ticket> tickets = ticketService.getAllTickets();
         return ResponseEntity.ok(tickets);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Ticket> getTicketById(@PathVariable long id) {
-        Optional<Ticket> optionalTicket = ticketRepo.findById(id);
+        Optional<Ticket> optionalTicket = ticketService.getTicketById(id);
 
         if (optionalTicket.isPresent()) {
             Ticket ticket = optionalTicket.get();
@@ -36,25 +36,16 @@ public class TicketController {
 
     @PostMapping
     public ResponseEntity<Ticket> addNewTicket(@RequestBody Ticket addTicket) {
-        Ticket savedTicket = ticketRepo.save(addTicket);
+        Ticket savedTicket = ticketService.addTicket(addTicket);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedTicket);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Ticket> updateTicket(@PathVariable long id, @RequestBody Ticket updateTicket) {
-        Optional<Ticket> optionalTicket = ticketRepo.findById(id);
+        Optional<Ticket> optionalTicket = ticketService.updateTicket(id, updateTicket);
 
         if (optionalTicket.isPresent()) {
-            Ticket existingTicket = optionalTicket.get();
-
-            existingTicket.setTicketName(updateTicket.getTicketName());
-            existingTicket.setTicketStartingDate(updateTicket.getTicketStartingDate());
-            existingTicket.setTicketEndingDate(updateTicket.getTicketEndingDate());
-            existingTicket.setTicketAssign(updateTicket.getTicketAssign());
-            existingTicket.setTicketDescription(updateTicket.getTicketDescription());
-
-            ticketRepo.save(existingTicket);
-            return ResponseEntity.ok(existingTicket);
+            return ResponseEntity.ok(optionalTicket.get());
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -62,8 +53,7 @@ public class TicketController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTicketById(@PathVariable long id) {
-        if (ticketRepo.existsById(id)) {
-            ticketRepo.deleteById(id);
+        if (ticketService.deleteTicketById(id)) {
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.notFound().build();

@@ -1,7 +1,7 @@
 package com.workflow.controller;
 
 import com.workflow.entity.Project;
-import com.workflow.repository.ProjectRepo;
+import com.workflow.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,17 +14,17 @@ import java.util.Optional;
 public class ProjectController {
 
     @Autowired
-    private ProjectRepo projectRepo;
+    private ProjectService projectService;
 
     @GetMapping
     public ResponseEntity<List<Project>> getAllProjects() {
-        List<Project> projects = projectRepo.findAll();
+        List<Project> projects = projectService.getAllProjects();
         return ResponseEntity.ok(projects);
     }
 
     @GetMapping("/{projectId}")
     public ResponseEntity<Project> getProjectById(@PathVariable long projectId) {
-        Optional<Project> optionalProject = projectRepo.findById(projectId);
+        Optional<Project> optionalProject = projectService.getProjectById(projectId);
 
         if (optionalProject.isPresent()) {
             Project project = optionalProject.get();
@@ -35,18 +35,18 @@ public class ProjectController {
     }
 
     @PostMapping
-    public ResponseEntity<Project> addProject(@RequestBody Project addProject) {
-        Project savedProject = projectRepo.save(addProject);
+    public ResponseEntity<Project> addNewProject(@RequestBody Project addProject) {
+        Project savedProject = projectService.addNewProject(addProject);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedProject);
     }
 
     @DeleteMapping("/{projectId}")
     public ResponseEntity<Void> deleteProjectById(@PathVariable long projectId) {
-        if (projectRepo.existsById(projectId)) {
-            projectRepo.deleteById(projectId);
+        if (projectService.deleteProjectById(projectId)) {
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 }
+

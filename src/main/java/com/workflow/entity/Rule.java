@@ -1,65 +1,24 @@
 package com.workflow.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Rule {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long ruleId;
     String previousStageTrigger;
     String currentStageTrigger;
     String previousStageAction;
     String currentStageAcion;
-
-    public Rule() {}
-
-    public Rule(long ruleId, String previousStageTrigger, String currentStageTrigger, String previousStageAction, String currentStageAcion) {
-        this.ruleId = ruleId;
-        this.previousStageTrigger = previousStageTrigger;
-        this.currentStageTrigger = currentStageTrigger;
-        this.previousStageAction = previousStageAction;
-        this.currentStageAcion = currentStageAcion;
-    }
-
-    public long getRuleId() {
-        return ruleId;
-    }
-
-    public void setRuleId(long ruleId) {
-        this.ruleId = ruleId;
-    }
-
-    public String getPreviousStageTrigger() {
-        return previousStageTrigger;
-    }
-
-    public void setPreviousStageTrigger(String previousStageTrigger) {
-        this.previousStageTrigger = previousStageTrigger;
-    }
-
-    public String getCurrentStageTrigger() {
-        return currentStageTrigger;
-    }
-
-    public void setCurrentStageTrigger(String currentStageTrigger) {
-        this.currentStageTrigger = currentStageTrigger;
-    }
-
-    public String getPreviousStageAction() {
-        return previousStageAction;
-    }
-
-    public void setPreviousStageAction(String previousStageAction) {
-        this.previousStageAction = previousStageAction;
-    }
-
-    public String getCurrentStageAcion() {
-        return currentStageAcion;
-    }
-
-    public void setCurrentStageAcion(String currentStageAcion) {
-        this.currentStageAcion = currentStageAcion;
-    }
 }
